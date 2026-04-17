@@ -1,4 +1,6 @@
 public enum TransactionType {
     BUY,
-    SELL
+    SELL,
+    DEPOSIT,
+    WITHDRAW
 }
