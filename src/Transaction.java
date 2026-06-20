@@ -2,9 +2,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class Transaction {
-    // Definindo variáveis
-    UUID id;
+public class Transaction extends BaseEntity {
     Wallet wallet;
     Currency currency;
     BigDecimal quantity;
@@ -12,7 +10,6 @@ public class Transaction {
     TransactionType type;
     LocalDateTime executedAt;
 
-    // Definir construtor
     public Transaction(Wallet wallet, Currency currency, BigDecimal quantity, BigDecimal priceAtTime, TransactionType type){
         this.id = UUID.randomUUID();
 
@@ -36,9 +33,18 @@ public class Transaction {
         this.type = type;
     }
 
-    // Definir métodos
     public BigDecimal getTotalValue(){
         return (quantity.multiply(priceAtTime));
     }
 
+    @Override
+    public String toString() {
+        return "Transaction{id=" + id +
+                ", walletId=" + wallet.getId() +
+                ", currency=" + currency.getSymbol() +
+                ", quantity=" + quantity +
+                ", priceAtTime=" + priceAtTime +
+                ", type=" + type +
+                ", executedAt=" + executedAt + "}";
+    }
 }

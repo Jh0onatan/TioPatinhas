@@ -1,16 +1,32 @@
 import java.util.UUID;
 
-public class Currency {
-    // Definir variáveis
-    final String symbol;
-    final String name;
-    final boolean isFiat;
+public class Currency extends BaseEntity {
+    private final String symbol;
+    private final String name;
+    private final boolean isFiat;
 
-    // Definir construtor
     public Currency(String symbol, String name, boolean isFiat){
+        this.id = UUID.randomUUID();
+
         this.symbol = symbol;
         this.name = name;
         this.isFiat = isFiat;
     }
-    // Definir métodos
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isFiat() {
+        return isFiat;
+    }
+
+    @Override
+    public String toString() {
+        return "Currency{id=" + id + ", symbol='" + symbol + "', name='" + name + "', isFiat=" + isFiat + "}";
+    }
 }

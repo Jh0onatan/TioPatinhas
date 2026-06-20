@@ -1,13 +1,10 @@
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class Asset {
-    // Definir variáveis
-    UUID id;
+public class Asset extends BaseEntity {
     Currency currency;
     BigDecimal quantity;
 
-    // Definir construtor
     public Asset(Currency currency, BigDecimal quantity){
         this.id = UUID.randomUUID();
 
@@ -21,11 +18,16 @@ public class Asset {
         this.quantity = quantity;
     }
 
+    public Currency getCurrency() { return currency; }
 
+    public void setCurrency(Currency currency) { this.currency = currency; }
 
-    // Definir métodos
-    public BigDecimal getCurrentValue(){
-        return quantity;
+    public BigDecimal getQuantity() { return quantity; }
+
+    public void setQuantity(BigDecimal quantity) { this.quantity = quantity; }
+
+    @Override
+    public String toString() {
+        return "Asset{id=" + id + ", currency=" + currency + ", quantity=" + quantity + "}";
     }
-
 }

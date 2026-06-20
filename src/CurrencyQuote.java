@@ -3,15 +3,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class CurrencyQuote {
-    // Definir variáveis
-    UUID id;
+public class CurrencyQuote extends BaseEntity {
     Currency currency;
     Currency baseCurrency;
     BigDecimal price;
     LocalDateTime timestamp;
 
-    // Definir construtor
     public CurrencyQuote(Currency currency, Currency baseCurrency, BigDecimal price){
         this.id = UUID.randomUUID();
 
@@ -30,14 +27,30 @@ public class CurrencyQuote {
         this.timestamp = timestamp;
     }
 
-    // Definir métodos
+    public Currency getCurrency() { return currency; }
+
+    public void setCurrency(Currency currency) { this.currency = currency; }
+
+    public Currency getBaseCurrency() { return baseCurrency; }
+
+    public void setBaseCurrency(Currency currency) { this.baseCurrency = currency; }
+
+    public BigDecimal getPrice() { return price; }
+
+    public void setPrice(BigDecimal price) { this.price = price; }
+
     public String getFormattedPrice(){
-        // Formatando o horário/dia no padrão brasileiro.
-        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-        String dataFormatada = timestamp.format(formatador);
+        String formattedDate = timestamp.format(formatter);
 
-        // Retorno formatado do horário e moeda.
-        return dataFormatada + " : " + baseCurrency.symbol + price;
+        return formattedDate + " : " + baseCurrency.getSymbol() + price;
+    }
+
+    @Override
+    public String toString() {
+        return "CurrencyQuote{id=" + id + ", currency=" + currency.getSymbol() +
+                ", baseCurrency=" + baseCurrency.getSymbol() +
+                ", price=" + price + ", timestamp=" + timestamp + "}";
     }
 }

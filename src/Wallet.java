@@ -3,52 +3,69 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Wallet {
-    // Definindo variáveis
-    private final UUID id;
+public class Wallet extends BaseEntity {
     private User owner;
     private Currency baseCurrency;
-    private List<Asset> assets;
-    private List<Transaction> transactions;
+    private final List<Asset> assets;
+    private final List<Transaction> transactions;
 
-    // Definindo o construtor
-        // Carteira nova
     public Wallet(User owner, Currency baseCurrency){
         this.id = UUID.randomUUID();
+
         this.owner = owner;
         this.baseCurrency = baseCurrency;
         this.assets = new ArrayList<>();
         this.transactions = new ArrayList<>();
     }
 
-        // Carteira existente
     public Wallet(UUID id, User owner, Currency baseCurrency, List<Asset> assets, List<Transaction> transactions){
         this.id = id;
         this.owner = owner;
         this.baseCurrency = baseCurrency;
-        this.assets = new ArrayList<>();
-        this.transactions = new ArrayList<>();
+        this.assets = assets;
+        this.transactions = transactions;
     }
 
-
-    // Definindo os métodos
-        // Geters
-    public String getAsset(){
-        return assets.toString();
+    public User getOwner() {
+        return owner;
     }
 
+    public void setOwner(User owner) {
 
+        this.owner = owner;
+    }
 
-        // Métodos para ver quanto de cada moeda tem na carteira
+    public Currency getBaseCurrency() { return baseCurrency; }
+
+    public void setBaseCurrency(Currency baseCurrency) { this.baseCurrency = baseCurrency; }
+
+    public void updateBaseCurrency(Currency newBaseCurrency) {
+        this.baseCurrency = newBaseCurrency;
+    }
+
+    public void appendAsset(Asset asset) {
+        this.assets.add(asset);
+    }
+
+    public List<Asset> getAssets(){
+        return assets;
+    }
+
+    public void appendTransaction(Transaction transaction) {
+        this.transactions.add(transaction);
+    }
+
+    public List<Transaction> getTransactions() { return transactions; }
+
     public String getBalance(Currency c){
-        if (c == null || c.symbol == null || transactions == null){
+        if (c == null || c.getSymbol() == null || transactions == null){
             return BigDecimal.ZERO.toString();
         }
 
         BigDecimal balance = BigDecimal.ZERO;
 
         for (Transaction t : transactions){
-            if (t.currency != null && t.currency.symbol.equals(c.symbol)){
+            if (t.currency != null && t.currency.getSymbol().equals(c.getSymbol())){
                 if (t.type == TransactionType.BUY || t.type == TransactionType.DEPOSIT){
                     balance = balance.add(t.quantity);
                 }
@@ -59,23 +76,29 @@ public class Wallet {
         }
 
         return balance.toString();
-
     }
 
-        // Métodos para dizer o patrimônio total da carteira
-    public String getTotalValue(List<CurrencyQuote> currentPrices){
+    public String getBalance(String currencySymbol) {
+        for (Asset asset : assets) {
+            if (asset.getCurrency().getSymbol().equals(currencySymbol)) {
+                return asset.getQuantity().toString();
+            }
+        }
 
+        return BigDecimal.ZERO.toString();
+    }
+
+    public String getTotalValue(List<CurrencyQuote> currentPrices){
         BigDecimal totalPatrimony = BigDecimal.ZERO;
 
         for (Asset asset : assets){
-            if (asset.currency.symbol.equals(baseCurrency.symbol)){
+            if (asset.currency.getSymbol().equals(baseCurrency.getSymbol())){
                 totalPatrimony = totalPatrimony.add(asset.quantity);
                 continue;
             }
 
             for (CurrencyQuote quote : currentPrices){
-
-                if (quote.currency.symbol.equals(asset.currency.symbol)) {
+                if (quote.currency.getSymbol().equals(asset.currency.getSymbol())) {
                     BigDecimal convertValue = asset.quantity.multiply(quote.price);
                     totalPatrimony = totalPatrimony.add(convertValue);
 
@@ -87,7 +110,6 @@ public class Wallet {
         return totalPatrimony.toString();
     }
 
-        // Métodos de depósito
     public void deposit(Currency currency, BigDecimal amount){
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0){
             System.out.println("Erro: valor menor ou igual a zero!");
@@ -97,7 +119,7 @@ public class Wallet {
         boolean assetAlreadyExist = false;
 
         for (Asset asset : assets){
-            if (asset.currency.symbol.equals(currency.symbol)) {
+            if (asset.currency.getSymbol().equals(currency.getSymbol())) {
                 asset.quantity = asset.quantity.add(amount);
                 assetAlreadyExist = true;
                 break;
@@ -112,7 +134,16 @@ public class Wallet {
         Transaction receipt = new Transaction(this, currency, amount, BigDecimal.ONE, TransactionType.DEPOSIT);
         transactions.add(receipt);
 
-        System.out.println("Sucesso: Depósito de " + amount + " " + currency.symbol + " realizado!");
+        System.out.println("Sucesso: Depósito de " + amount + " " + currency.getSymbol() + " realizado!");
+    }
+
+    @Override
+    public String toString() {
+        return "Wallet{id=" + id +
+                ", owner=" + owner.getName() +
+                ", baseCurrency=" + baseCurrency.getSymbol() +
+                ", assets=" + assets +
+                ", transactions=" + transactions + "}";
     }
 }
 
