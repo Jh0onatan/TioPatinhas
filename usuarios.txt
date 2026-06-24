@@ -1,0 +1,2 @@
+User{id=a2171539-d9d6-4cac-b462-4162eada4a01, name='user1', email='user1@gmail.com'}
+User{id=27f32d22-d872-442b-a3cb-901ad9ceda46, name='user2', email='user2@gmail.com'}

@@ -1,6 +1,8 @@
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.FileWriter;
+
 
 public class Main{
     public static void main(String[] args) {
@@ -87,9 +89,48 @@ public class Main{
             System.out.println("BRL: " + walletsByUser.get(user2).get(1).getBalance(BRL));
             System.out.println("ETH: " + walletsByUser.get(user2).get(1).getBalance("ETH"));
 
+            // Criar / atualizar arquivo de usuários
+            FileWriter writerUsers = new FileWriter("usuarios.txt");
+
+            for (User user : users) {
+                writerUsers.write(user.toString() + "\n");
+            }
+
+            writerUsers.close();
+
+            // Criar / atualizar arquivo de moedas
+            FileWriter writerCurrencies = new FileWriter("moedas.txt");
+
+            for (Currency currency : supportedCurrencies) {
+                writerCurrencies.write(currency.toString() + "\n");
+            }
+
+            writerCurrencies.close();
+
+
+            // Criar / atualizar arquivo de carteiras por usuário
+            FileWriter writerWallets = new FileWriter("carteiras.txt");
+
+            for (User user : walletsByUser.keySet()) {
+                writerWallets.write("Usuário: " + user.toString() + "\n");
+
+                ArrayList<Wallet> wallets = walletsByUser.get(user);
+
+                for (Wallet wallet : wallets) {
+                    writerWallets.write(wallet.toString() + "\n");
+                }
+
+                writerWallets.write("----------------------\n");
+            }
+
+            writerWallets.close();
+
+            System.out.println("Arquivos criados/atualizados com sucesso!");
+
         } catch (IllegalArgumentException e) {
             System.out.println("Erro de argumento: " + e.getMessage());
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.out.println("Erro inesperado: " + e.getMessage());
         }
     }
